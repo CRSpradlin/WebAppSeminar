@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target='_top'>
+    
+    <style>
+      html, body{
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+      h1{
+        animation: content;
+      }
+      input[type=text] {
+        padding: 12px 20px;
+        margin: 8px 5px;
+        outline: none;
+        border: none;
+        background-color: lightgrey;
+      }
+      input[type=submit]{
+        height: 30px;
+        background-color: navy;
+        color: white;
+        cursor: pointer;
+      }
+    </style>
+    
+  </head>
+  <body>
+    <!--Second Half --><h1 id='response'><?!= retrieveFromSpreadsheet(); ?></h1> <!-- Second Half -->
+    <form onsubmit='submitInput()' action='javascript:void(0);'>
+      <input id='input' type='text' />
+      <input id='submit' type='submit' value='Submit' />
+    </form>
+    
+    <script>
+      function submitInput(){
+        var value = document.getElementById('input').value;
+        document.getElementById('submit').value = 'Loading...';
+        document.getElementById('submit').disabled = true;
+        google.script.run
+         .withSuccessHandler(submitGood)
+         .withFailureHandler(submitBad)
+         .submitToSpreadsheet(value);
+      }
+      function submitGood(){
+        var textBox = document.getElementById('input');
+        document.getElementById('response').innerHTML = textBox.value
+        textBox.value = '';
+        
+        document.getElementById('submit').value = 'Submit';
+        document.getElementById('submit').disabled = false;
+      }
+      function submitBad(){
+        alert('An error occured while submitting your input! Try again later.');
+      }
+    </script>
+  </body>
+</html>
+
+
